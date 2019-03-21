@@ -96,7 +96,8 @@ class Machine(object):
 			3. Avg. Turnaround time: turnaround / done
 			4. Load average(waiting time): will be reported from simulator
 			5. Avg. Response time: respond / done
-			+. Avg. priority: priority / done			
+			+. Avg. priority: priority / done
+			+. Avg. scheduling time: will be reported from simulator	
 		'''
 		self.utilization= 0
 		self.done	= 0
