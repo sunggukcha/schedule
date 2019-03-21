@@ -14,3 +14,4 @@ Packet generators generate packets accroding to given gauss distribution. Schedu
 4. Load average(waiting time)
 5. Response time
 6. Avg. priority
+7. Scheduling time
