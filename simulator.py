@@ -107,13 +107,13 @@ class Generator(object):
 		res = int(res)
 		res = min(9, max(0, res))
 		return res
-	def generate(self, rel):
+	def generate(self, rel, until):
 		if self.time > rel:
 			return None
 		req  = self._gen_r()
 		time = self._gen_t()
 		prio = self._gen_p()
-		if time == 0:
+		if time == 0 or rel + time > until:
 			return None
 		p = Packet(req, time, prio, rel, int(rel + time * np.random.uniform(1, self.delay)))
 		self.time += int(self.time_mean * np.random.uniform(1, self.delay))
@@ -254,8 +254,9 @@ class Machine(object):
 
 	def process(self, packets, time, preemptive=False):
 		self.load(time, packets, preemptive)
+		self.util += self.ncores - self.idle
 		#print(time, print_core(self.cores))
-		#print(time, self.cores)
+		print(time, self.cores)
 		'''
 		res = self.readyQ
 		self.readyQ.clear()
@@ -283,7 +284,6 @@ class Machine(object):
 				self.cores[i] = None
 		res = self.readyQ.copy()
 		self.readyQ.clear()
-		self.util += self.ncores - self.idle
 #		'''
 		cc = 0
 		for p in self.cores:
@@ -315,7 +315,7 @@ class Simulator(object):
 					self.dead += 1
 					self.packets.remove(p)
 			for gen in self.generators:
-				p = gen.generate(self.time)
+				p = gen.generate(self.time, self.until)
 				if p == None:
 					continue
 				self.logger.add(p.getLine())

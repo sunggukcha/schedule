@@ -24,5 +24,5 @@ if __name__ == '__main__':
 	_m	= data["machine"]
 	machine = Machine(_m["resources"], _m["performance"], _m["ncore"])
 
-	simulator = Simulator(gens, scheduler, machine, 1000)
+	simulator = Simulator(gens, scheduler, machine, 10000)
 	simulator.run()

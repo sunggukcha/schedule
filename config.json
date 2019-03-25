@@ -8,7 +8,7 @@
 			"tstd"	: 2.5,
 			"pmean"	: 5,
 			"pstd"	: 2.5,
-			"delay"	: 3
+			"delay"	: 1
 		},
 		{
 			"rmean"	: 1,
@@ -17,7 +17,7 @@
 			"tstd"	: 0.5,
 			"pmean"	: 5,
 			"pstd"	: 2.5,
-			"delay"	: 2
+			"delay"	: 1
 		},
 		{
 			"rmean" : 3,
@@ -27,11 +27,29 @@
 			"pmean"	: 5,
 			"pstd"	: 2.5,
 			"delay"	: 1
-		}
+		},
+                {
+                        "rmean" : 3,
+                        "rstd"  : 2,
+                        "tmean" : 1,
+                        "tstd"  : 1,
+                        "pmean" : 5,
+                        "pstd"  : 2.5,
+                        "delay" : 1
+                },
+                {
+                        "rmean" : 3,
+                        "rstd"  : 2,
+                        "tmean" : 1,
+                        "tstd"  : 1,
+                        "pmean" : 5,
+                        "pstd"  : 2.5,
+                        "delay" : 1
+                }
 	],
 	"machine": {
 		"resources"	: 10,
 		"performance"	: 1,
-		"ncore"		: 4
+		"ncore"		: 1
 	}
 }
