@@ -33,12 +33,15 @@ class EDF (object):
 	def run(self, time, packets, runQ):
 		heapQ = []
 		for p in packets:
+			if p == None:
+				print("ERROR: None packet gerenated")
+				exit()
 			heappush(heapQ, self.prios(p))
 		for p in runQ:
 			if p == None:
 				continue
 			heappush(heapQ, self.prios(p))
-		heapQ = heapsort(heapQ)
+		#heapQ = heapsort(heapQ)
 		res = []
 		while len(heapQ) > 0:
 			_p = heappop(heapQ)

@@ -24,7 +24,7 @@ def print_core(core):
 		if p == None:
 			pp.append(p)
 		else:
-			pp.append(p.release)
+			pp.append(p.dead)
 	return pp
 
 class Logger(object):
@@ -185,9 +185,9 @@ class Machine(object):
 			if p != None:
 				npacket += 1
 		for i in range(self.ncores):
-			if packets[i] == None:
-				continue
 			p = packets[i]
+			if p == None:
+				continue
 			if preemptive:
 				if self.cores[i] == None:
 					if self.resources < p.required:
@@ -221,7 +221,23 @@ class Machine(object):
 			print("working: ", self.ncores-self.idle)
 			print("readyQ: ", len(self.readyQ))
 			exit()
-	def load(self, packet, preemptive=False):
+	def load(self, time, packet, preemptive=False):
+		for p in self.cores:
+			if p == None:
+				continue
+			if p.dead <= time:
+				self.resources += p.required
+				self.idle += 1
+				self.dead += 1
+				i = self.cores.index(p)
+				self.cores[i] = None
+		for p in packet:
+			if p in self.cores and preemptive and p != None:
+				i = self.cores.index(p)
+				self.resources += p.required
+				self.idle += 1
+				self.cores[i] = None
+				#print("runQ packet continues!")
 		'''
 			packet : Packet list
 			len(packet) should be 1 or equal to ncores
@@ -237,8 +253,14 @@ class Machine(object):
 			self.single(packet[0], preemptive)
 
 	def process(self, packets, time, preemptive=False):
-		self.load(packets, preemptive)
+		self.load(time, packets, preemptive)
 		print(time, print_core(self.cores))
+		#print(time, self.cores)
+		'''
+		res = self.readyQ
+		self.readyQ.clear()
+		return self.cores, res
+		'''
 		for i in range(self.ncores):
 			p = self.cores[i]
 			if p == None:
@@ -262,7 +284,7 @@ class Machine(object):
 		res = self.readyQ.copy()
 		self.readyQ.clear()
 		self.util += self.ncores - self.idle
-		'''
+#		'''
 		cc = 0
 		for p in self.cores:
 			if p == None:
@@ -270,7 +292,7 @@ class Machine(object):
 		if self.idle < 0 or self.idle > self.ncores or cc != self.idle:
 			print("ERROR: BUG IN IDLE COUNT")
 			exit()
-		'''
+#		'''
 		return self.cores, res
 
 class Simulator(object):
@@ -285,8 +307,13 @@ class Simulator(object):
 		self.runQ	= machine.cores
 		# evaluation
 		self.load	= 0
+		self.dead	= 0
 	def run(self):
 		while self.time < self.until:
+			for p in self.packets:
+				if p.dead <= self.time:
+					self.dead += 1
+					self.packets.remove(p)
 			for gen in self.generators:
 				p = gen.generate(self.time)
 				if p == None:
@@ -318,12 +345,15 @@ class Simulator(object):
 			for c in self.runQ:
 				if c != None:
 					_r += 1
-			if self.logger.getLen() != self.machine.done + len(self.packets) + _r:
+			if self.logger.getLen() != self.machine.done + len(self.packets) + _r + self.machine.dead + self.dead and False:
 				print("ERROR in packet delivery")
 				print("%d packets generated" % self.logger.getLen())
 				print("%d packets done" % self.machine.done)
 				print("%d packets in Q" % len(self.packets))
-				print("%d pacekts in runQ" % _r)
+				print("%d packets in runQ" % _r)
+				print("%d packets dead in processor" % self.machine.dead)
+				print("%d packets dead in scheduler" % self.dead)
+				self.logger.write('log.csv')
 				exit()
 			'''
 			ppp = []
@@ -344,7 +374,7 @@ class Simulator(object):
 		if result[0] == 0:
 			print("NOTHING PROCESSED")
 			return False
-		print("CPU utilization: ", round(result[3] / (self.machine.ncores * self.until) * 100, 2))
+		print("CPU utilization: %.2f%%" % round(result[3] / (self.machine.ncores * self.until) * 100, 2))
 		print("Throughput: ", result[0] / self.until)
 		print("Avg. turnaround: ", result[1] / result[0])
 		print("Avg. priority: ", result[2] / result[0])
