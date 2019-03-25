@@ -20,9 +20,9 @@
 			"delay"	: 2
 		}
 	],
-	"machine": [
+	"machine": {
 		"resources"	: 10,
 		"performance"	: 1,
 		"ncore"		: 4
-	]
+	}
 }

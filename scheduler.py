@@ -5,7 +5,7 @@ from heapq import *
 def heapsort(iterable):
 	h = []
 	for v in iterable:
-		heappush(h, value)
+		heappush(h, v)
 	return [heappop(h) for i in range(len(h))]
 
 class EDF (object):
@@ -25,20 +25,31 @@ class EDF (object):
 			self.packets.append(tup)
 		heapsort(self.packets)
 		'''
+	def prios(self, p):
+		if p == None:
+			print("ERROR: None packet is in Q")
+			exit()
+		return (p.dead, p.priority, p.release, p.time, p.required, p)
 	def run(self, time, packets, runQ):
 		heapQ = []
 		for p in packets:
-			heapQ.append((p.dead, p))
+			heappush(heapQ, self.prios(p))
 		for p in runQ:
-			headQ.append((p.dead, p))
+			if p == None:
+				continue
+			heappush(heapQ, self.prios(p))
 		heapQ = heapsort(heapQ)
 		res = []
 		while len(heapQ) > 0:
-			d, p = heappop(heapQ)
+			_p = heappop(heapQ)
+			p = _p[5]
+			d = _p[0]
 			# abort
 			if time + p.time > d:
 				continue
 			res.append(p)
 			if len(res) == self.n_core:
 				return res
+		while len(res) < self.n_core:
+			res.append(None)
 		return res
