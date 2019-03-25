@@ -18,6 +18,15 @@
 			"pmean"	: 5,
 			"pstd"	: 2.5,
 			"delay"	: 2
+		},
+		{
+			"rmean" : 3,
+			"rstd"	: 2,
+			"tmean" : 10,
+			"tstd"	: 1,
+			"pmean"	: 5,
+			"pstd"	: 2.5,
+			"delay"	: 1
 		}
 	],
 	"machine": {

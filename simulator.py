@@ -254,7 +254,7 @@ class Machine(object):
 
 	def process(self, packets, time, preemptive=False):
 		self.load(time, packets, preemptive)
-		print(time, print_core(self.cores))
+		#print(time, print_core(self.cores))
 		#print(time, self.cores)
 		'''
 		res = self.readyQ
@@ -368,7 +368,7 @@ class Simulator(object):
 		self.logger.write("log.csv")
 		print(self.logger.getLen(), "packets generated")
 		print(self.machine.done, "packets are done")
-		print(self.machine.dead, "packets are dead")
+		print(self.logger.getLen() - self.machine.done, "packets are dead")
 		#self.logger.write(log.csv)
 		result = self.machine.result()
 		if result[0] == 0:
