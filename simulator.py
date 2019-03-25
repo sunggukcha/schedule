@@ -20,15 +20,15 @@ import csv
 
 class Logger(object):
 	def __init__(self):
-		self.lines = [['release', 'dead', 'priority', 'required', 'time']
+		self.lines = [['release', 'dead', 'priority', 'required', 'time']]
 	def add(self, line):
 		self.lines.append(line)
 	def load(self, load_dir):
-		with open(load_dir, 'r') as readFile
+		with open(load_dir, 'r') as readFile:
 			reader = csv.reader(readFile)
 			lines = list(reader)
 	def write(self, save_dir):
-		with open(save_dir, 'w') as writeFile
+		with open(save_dir, 'w') as writeFile:
 			writer = csv.writer(writeFile)
 			writer.writerows(lines)
 		writeFile.close()
@@ -81,29 +81,28 @@ class Generator(object):
 		self.delay	= delay
 		self.time	= 0
 	def _gen_r(self):
-		while True:
-			res = np.random.normal(self.req_mean, self.req_std)
-			res = int(res[0])
-			if 0 <= res:
-				return res
+		res = np.random.normal(self.req_mean, self.req_std)
+		res = int(res[0])
+		return max(0, res)
 	def _gen_t(self):
-		while True:
-			res = np.random.normal(self.time_mean, self.time_std)
-			res = int(res[0])
-			if res > 0:
-				return res
+		res = np.random.normal(self.time_mean, self.time_std)
+		res = int(res[0])
+		if res > 0:
+			return res
+		return 0
 	def _gen_p(self):
-		while True:
-			res = np.random.normal(self.prio_mean, self.prio_std)
-			res = int(res[0])
-			if 0 <= res and res <= 9:
-				return res
+		res = np.random.normal(self.prio_mean, self.prio_std)
+		res = int(res[0])
+		res = min(9, max(0, res))
+		return res
 	def generate(self, rel):
 		if self.time > rel:
 			return None
 		req  = self._gen_r()
 		time = self._gen_t()
 		prio = self._gen_p()
+		if time == 0:
+			return None
 		p = Packet(req, time, prio, rel)
 		self.time += int(self.time_mean * np.random.uniform(1, self.delay))
 		return p
@@ -147,6 +146,8 @@ class Machine(object):
 		self.turnaround	= 0
 		#self.respond	= 0
 		self.priority	= 0
+	def result(self):
+		return [self.done, self.turnaround, self.priority]
 	def single(self, packet, preemptive=False):
 		if preemptive:
 			assert False, "preemptive single load is not available.\n	Please use multi load preemtive mode.\n"
@@ -238,8 +239,16 @@ class Simulator(object):
 		self.logger	= Logger()
 		self.packets	= []
 		self.runQ	= machine.cores
-	def process(self):
+		# evaluation
+		self.load	= 0
+	def run(self):
 		if self.time > self.until:
+			result = machine.result()
+			print("Throughput: ", result[0] / self.time)
+			print("Avg. turnaround: ", result[1] / result[0])
+			print("Avg. priority: ", result[2] / result[0])
+			print("Avg. load: ", self.load / self.time)
+			# scheduling time in plan
 			return True
 			'Simulation done'
 		for gen in self.generators:
@@ -248,7 +257,11 @@ class Simulator(object):
 				continue
 			self.logger.add(p.getLine())
 			self.packets.append(p)
-		schedule = self.scheduler(self.packets, self.runQ)
-		self.runQ, readyQ = self.machine.process(self.packets, self.time)
+		self.load += len(self.packets)
+		schedule = self.scheduler.run(self.time, self.packets, self.runQ)
+		for d, p in schedule:
+			if p in self.packets:
+				self.packets.remove(p)					
+		self.runQ, readyQ = self.machine.process(schedule, self.time, preemptive=self.scheduler.preempt)
 		self.packets += readyQ
 		self.time += 1

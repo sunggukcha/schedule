@@ -1,0 +1,28 @@
+{
+	"scheduler": "edf",
+	"generators": [
+		{
+			"rmean"	: 2,
+			"rstd"	: 1,
+			"tmean"	: 5,
+			"tstd"	: 2.5,
+			"pmean"	: 5,
+			"pstd"	: 2.5,
+			"delay"	: 3
+		},
+		{
+			"rmean"	: 1,
+			"rstd"	: 1,
+			"tmean"	: 1,
+			"tstd"	: 0.5,
+			"pmean"	: 5,
+			"pstd"	: 2.5,
+			"delay"	: 2
+		}
+	],
+	"machine": [
+		"resources"	: 10,
+		"performance"	: 1,
+		"ncore"		: 4
+	]
+}
