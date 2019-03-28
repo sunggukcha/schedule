@@ -11,9 +11,11 @@ It consists of
 ### Schedulers
 
 ### Machine
-It runs Banker's algorithm which prevents deadlock at all.
+It runs Banker's algorithm with a single resource type, which prevents deadlock at all.
 
 ### Simulator
+
+### Evaluation
 
 Packet generators generate packets accroding to given gauss distribution. Scheduler schedules given packets and machine state. With the schedule, simulator runs the machine and evaluates with following criteria.
 
