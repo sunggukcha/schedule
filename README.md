@@ -15,6 +15,8 @@ It runs Banker's algorithm with a single resource type, which prevents deadlock 
 
 ### Simulator
 
+it is amazing
+
 ### Evaluation
 
 Packet generators generate packets accroding to given gauss distribution. Scheduler schedules given packets and machine state. With the schedule, simulator runs the machine and evaluates with following criteria.
