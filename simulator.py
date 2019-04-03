@@ -256,7 +256,7 @@ class Machine(object):
 		self.load(time, packets, preemptive)
 		self.util += self.ncores - self.idle
 		#print(time, print_core(self.cores))
-		print(time, self.cores)
+		#print(time, self.cores)
 		'''
 		res = self.readyQ
 		self.readyQ.clear()
