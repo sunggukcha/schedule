@@ -2,54 +2,36 @@
 	"scheduler": "edf",
 	"generators": [
 		{
-			"rmean"	: 2,
-			"rstd"	: 1,
+			"rmean"	: 0,
+			"rstd"	: 0.1,
 			"tmean"	: 5,
-			"tstd"	: 2.5,
-			"pmean"	: 5,
-			"pstd"	: 2.5,
-			"delay"	: 1
-		},
-		{
-			"rmean"	: 1,
-			"rstd"	: 1,
-			"tmean"	: 1,
-			"tstd"	: 0.5,
-			"pmean"	: 5,
-			"pstd"	: 2.5,
-			"delay"	: 1
-		},
-		{
-			"rmean" : 3,
-			"rstd"	: 2,
-			"tmean" : 10,
 			"tstd"	: 1,
-			"pmean"	: 5,
-			"pstd"	: 2.5,
-			"delay"	: 1
+			"pmean"	: 2,
+			"pstd"	: 1,
+			"delay"	: 3
 		},
-                {
-                        "rmean" : 3,
-                        "rstd"  : 2,
-                        "tmean" : 1,
-                        "tstd"  : 1,
-                        "pmean" : 5,
-                        "pstd"  : 2.5,
-                        "delay" : 1
-                },
-                {
-                        "rmean" : 3,
-                        "rstd"  : 2,
-                        "tmean" : 1,
-                        "tstd"  : 1,
-                        "pmean" : 5,
-                        "pstd"  : 2.5,
-                        "delay" : 1
-                }
+		{
+			"rmean"	: 0,
+			"rstd"	: 0.1,
+			"tmean"	: 5,
+			"tstd"	: 1,
+			"pmean"	: 2,
+			"pstd"	: 1,
+			"delay"	: 3
+		},
+		{
+			"rmean" : 0,
+			"rstd"	: 0.1,
+			"tmean" : 5,
+			"tstd"	: 1,
+			"pmean"	: 7,
+			"pstd"	: 1,
+			"delay"	: 3
+		}
 	],
 	"machine": {
-		"resources"	: 10,
+		"resources"	    : 999,
 		"performance"	: 1,
-		"ncore"		: 1
+		"ncore"		    : 1
 	}
 }

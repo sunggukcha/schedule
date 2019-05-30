@@ -119,6 +119,20 @@ class Generator(object):
 		self.time += int(self.time_mean * np.random.uniform(1, self.delay))
 		return p
 
+class Loader(object):
+	def __init__(self):
+		pass
+	def gen_packets(self, csv):
+		packets = []
+		f = open(csv, 'r')
+		reader = csv.reader(f)
+		for line in reader[1:]:
+			cfg = line.split()
+			print(line)
+			p = Packet(cfg[3], cfg[4], cfg[2], cfg[0], cfg[1])
+			packets.append(p)
+		return packets
+
 class Machine(object):
 	def __init__(self, resources, performance, cores):
 		'''
@@ -296,25 +310,27 @@ class Machine(object):
 		return self.cores, res
 
 class Simulator(object):
-	def __init__(self, generators, scheduler, machine, until):
+	def __init__(self, generators, scheduler, machine, until, packets=None):
 		self.time	= 0
 		self.until	= until
 		self.generators	= generators
 		self.scheduler	= scheduler
 		self.machine	= machine
 		self.logger	= Logger()
-		self.packets	= []
+		self.packets	= [] if packets == None else packets
+		self.gen	= True if packets == None else False
 		self.runQ	= machine.cores
 		# evaluation
 		self.load	= 0
 		self.dead	= 0
-	def run(self):
+	def run(self, saveas=None, log=None):
 		while self.time < self.until:
 			for p in self.packets:
 				if p.dead <= self.time:
 					self.dead += 1
 					self.packets.remove(p)
 			for gen in self.generators:
+				if not self.gen: break
 				p = gen.generate(self.time, self.until)
 				if p == None:
 					continue
@@ -365,7 +381,6 @@ class Simulator(object):
 			print(self.time, " : ", ppp)
 			'''
 			#print("%d packets and %d inQ" % (len(self.packets), len(self.runQ)))
-		self.logger.write("log.csv")
 		print(self.logger.getLen(), "packets generated")
 		print(self.machine.done, "packets are done")
 		print(self.logger.getLen() - self.machine.done, "packets are dead")
@@ -380,5 +395,10 @@ class Simulator(object):
 		print("Avg. priority: ", result[2] / result[0])
 		print("Avg. load: ", self.load / self.until)
 		# scheduling time in plan
-		return True
+		if not saveas is None:
+			self.logger.write(saveas)
+			f = open(log, 'a')
+			f.write(saveas + " " + str(self.machine.done) + " " + str(result[2]/result[0]) + '\n')
+			f.close()
+		return self.machine.done, result[2] / result[0]
 		'Simulation done'

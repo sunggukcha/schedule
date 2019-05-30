@@ -56,3 +56,43 @@ class EDF (object):
 		while len(res) < self.n_core:
 			res.append(None)
 		return res
+
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import torchvision.transforms as T
+from models import dnn
+
+class ML(object):
+    def __init__(self, ncore, preempt=True):
+        self.ncore = ncore
+        self.preempt = preempt
+        self.packets = []
+        self.model = dnn.FC10(nn.BatchNorm1d)
+    def run(self, time, packets, runQ):
+        '''
+            Now it supports single core only.
+        '''
+        art = add = apr = apt = 0.0
+        ct = time
+        for p in packets:
+            art += p.release
+            add += p.dead
+            apr += p.priority
+            apt += p.time
+        art /= len(packets)
+        add /= len(packets)
+        apr /= len(packets)
+        apt /= len(packets)
+        head = [ct, art, add, apr, apt]
+        res = []
+        for p in packets:
+            _x = head + [p.release, p.dead, p.priority, p.time]
+            _x = torch.as_tensor(np.asarray(_x))
+            output = self.model(_x)
+            res.append(output)
+        index = np.asarray(res).argmax()
+        return packets[index]
+
