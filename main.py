@@ -40,4 +40,5 @@ if __name__ == '__main__':
 			gens.append(gen)
 		machine = Machine(_m["resources"], _m["performance"], _m["ncore"])
 		simulator = Simulator(gens, scheduler, machine, 100000)
-		simulator.run(saveas=saveas,log=log)
+		simulator.run()
+#		simulator.run(saveas=saveas,log=log)
