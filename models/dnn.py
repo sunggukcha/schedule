@@ -61,7 +61,6 @@ class DNN(nn.Module):
         x = self.R1(x)
         x = self.R2(x)
         x = self.R3(x)
-        print(x.shape)
         return x
 
 def FC10(Norm):

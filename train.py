@@ -17,6 +17,7 @@ model = dnn.FC10(nn.BatchNorm1d)
 epoch = 1000
 learning_rate = 0.01
 criterion = nn.CrossEntropyLoss()
+cri2    = lambda x, y: 1 if x < y else -1
 #loss = criterion(output, target)
 
 import csv
@@ -63,7 +64,8 @@ if __name__ == '__main__':
 			machine = Machine(_m["resources"], _m["performance"], _m["ncore"])
 			simulator = Simulator(gens, scheduler, machine, 100000, packets=get_pacekts(load))
 			out_t, out_p = simulator.run()
-			loss = criterion(out_t, thru) + criterion(out_p, prio)
+			#loss = criterion(out_t, thru) + criterion(out_p, prio)
+            loss = 
 			optimizer.zero_grad()
 			loss.backward()
 			optimizer.step()
